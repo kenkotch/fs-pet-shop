@@ -15,7 +15,10 @@ if (cmd === 'read') {
 
     let idx = process.argv[3]
     let pets = JSON.parse(data)
-    if (idx < 0 || idx > pets.length-1) {
+
+    if (typeof idx !== 'number') {
+      console.log(pets)
+    } else if (idx < 0 || idx > pets.length-1) {
       console.error(`Usage: ${node} ${file} ${cmd} INDEX`)
     } else if (idx) {
       console.log(pets[idx])
