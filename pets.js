@@ -16,9 +16,12 @@ if (cmd === 'read') {
     let idx = process.argv[3]
     let pets = JSON.parse(data)
 
-    if (typeof idx !== 'number') {
+    if (isNaN(idx)) {
       console.log(pets)
-    } else if (idx < 0 || idx > pets.length-1) {
+      process.exit()
+    }
+
+    if (idx < 0 || idx > pets.length - 1) {
       console.error(`Usage: ${node} ${file} ${cmd} INDEX`)
     } else if (idx) {
       console.log(pets[idx])
@@ -49,7 +52,7 @@ if (cmd === 'read') {
 //
 //       console.log(age, kind, name)
 //     })
-  // })
+//   })
 
   // update
   // } else if (cmd === 'update') {
