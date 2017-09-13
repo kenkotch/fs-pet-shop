@@ -52,7 +52,7 @@ if (cmd === 'read') {
 
       fs.writeFile(petsPath, petsJSON, (writeErr) => {
         if (writeErr) throw writeErr
-        console.log(age, kind, name)
+        console.log(`{ age: ${age}, kind: ${kind}, name: ${name} }`)
       })
     }
   })
