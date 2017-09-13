@@ -59,8 +59,8 @@ if (cmd === 'read') {
     }
   })
 } else if (cmd === 'update') {
-  fs.readFile(petsPath, 'utf8', (readErr, data) => {
-    if (readErr) throw readErr
+  fs.readFile(petsPath, 'utf8', (err, data) => {
+    if (err) throw err
 
     let pets = JSON.parse(data)
     let idx = Number(process.argv[3])
@@ -84,6 +84,27 @@ if (cmd === 'read') {
       fs.writeFile(petsPath, petsJSON, (writeErr) => {
         if (writeErr) throw writeErr
         console.log(`{ age: ${age}, kind: '${kind}', name: '${name}' }`)
+      })
+    }
+  })
+} else if (cmd === 'destroy') {
+  fs.readFile(petsPath, 'utf8', (readErr, data) => {
+    if (readErr) throw readErr
+
+    let pets = JSON.parse(data)
+    let idx = Number(process.argv[3])
+
+    if (isNaN(idx)) {
+      console.error(`Usage: ${node} ${file} ${cmd} INDEX`)
+      process.exit(1)
+    } else {
+      console.log(pets[idx])
+      pets.splice(idx, 1)
+
+      let petsJSON = JSON.stringify(pets)
+
+      fs.writeFile(petsPath, petsJSON, (writeErr) => {
+        if (writeErr) throw writeErr
       })
     }
   })
