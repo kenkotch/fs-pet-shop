@@ -52,7 +52,7 @@ if (cmd === 'read') {
 
       fs.writeFile(petsPath, petsJSON, (writeErr) => {
         if (writeErr) throw writeErr
-        console.log(`{ age: ${age}, kind: ${kind}, name: ${name} }`)
+        console.log(`{ age: ${age}, kind: '${kind}', name: '${name}' }`)
       })
     }
   })
@@ -66,6 +66,6 @@ if (cmd === 'read') {
 //
 //   })
 } else {
-  console.error(`Usage: ${node} ${file} [ read | create | update | destroy ]`)
+  console.error(`Usage: ${node} ${file} [read | create | update | destroy]`)
   process.exit(1)
 }
