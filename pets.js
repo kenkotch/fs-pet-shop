@@ -1,7 +1,9 @@
 'use strict'
 
 const fs = require('fs')
+
 const path = require('path')
+
 const petsPath = path.join(__dirname, 'pets.json')
 
 const node = path.basename(process.argv[0])
@@ -56,15 +58,35 @@ if (cmd === 'read') {
       })
     }
   })
-// }
+} else if (cmd === 'update') {
+  fs.readFile(petsPath, 'utf8', (readErr, data) => {
+    if (readErr) throw readErr
 
-// update
-// } else if (cmd === 'update') {
-//   fs.readFile(petsPath, 'utf8', (err, data) => {
-//     if (err) throw err
-//
-//
-//   })
+    let pets = JSON.parse(data)
+    let idx = Number(process.argv[3])
+    let age = Number(process.argv[4])
+    let kind = process.argv[5]
+    let name = process.argv[6]
+
+    if (isNaN(idx) || isNaN(age)) {
+      console.error(`Usage: ${node} ${file} ${cmd} INDEX AGE KIND NAME`)
+      process.exit(1)
+    }
+
+    if (!name) {
+      console.error(`Usage: ${node} ${file} ${cmd} INDEX AGE KIND NAME`)
+      process.exit(1)
+    } else {
+      pets.splice(idx, 0, { age, kind, name })
+
+      let petsJSON = JSON.stringify(pets)
+
+      fs.writeFile(petsPath, petsJSON, (writeErr) => {
+        if (writeErr) throw writeErr
+        console.log(`{ age: ${age}, kind: '${kind}', name: '${name}' }`)
+      })
+    }
+  })
 } else {
   console.error(`Usage: ${node} ${file} [read | create | update | destroy]`)
   process.exit(1)
