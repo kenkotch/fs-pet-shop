@@ -37,6 +37,11 @@ if (cmd === 'read') {
     let kind = process.argv[4]
     let name = process.argv[5]
 
+    if (isNaN(age)) {
+      console.error(`Usage: ${node} ${file} ${cmd} AGE KIND NAME`)
+      process.exit(1)
+    }
+
     if (!name) {
       console.error(`Usage: ${node} ${file} ${cmd} AGE KIND NAME`)
       process.exit(1)
@@ -51,7 +56,7 @@ if (cmd === 'read') {
       })
     }
   })
-}
+// }
 
 // update
 // } else if (cmd === 'update') {
@@ -60,7 +65,7 @@ if (cmd === 'read') {
 //
 //
 //   })
-// } else {
-//   console.error(`Usage: ${node} ${file} [ read | create | update | destroy ]`)
-//   process.exit(1)
-// }
+} else {
+  console.error(`Usage: ${node} ${file} [ read | create | update | destroy ]`)
+  process.exit(1)
+}
