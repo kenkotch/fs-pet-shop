@@ -8,7 +8,6 @@ const node = path.basename(process.argv[0])
 const file = path.basename(process.argv[1])
 const cmd = process.argv[2]
 
-// read
 if (cmd === 'read') {
   fs.readFile(petsPath, 'utf8', (err, data) => {
     if (err) throw err
@@ -29,39 +28,39 @@ if (cmd === 'read') {
       console.log(pets)
     }
   })
-  // create
-// } else if (cmd === 'create') {
-//   fs.readFile(petsPath, 'utf8', (readErr, data) => {
-//     if (readErr) throw readErr
-//
-//     let pets = JSON.parse(data)
-//     let age = process.argv[3]
-//     let kind = process.argv[4]
-//     let name = process.argv[5]
-//
-//     if (!pets) {
-//       console.error(`Usage: ${node} ${file} ${cmd} GUEST`)
-//       process.exit(1)
-//     }
-//     pets.push(age, kind, name)
-//
-//     let petsJSON = JSON.stringify(pets)
-//
-//     fs.writeFile(petsPath, petsJSON, (writeErr) => {
-//       if (writeErr) throw writeErr
-//
-//       console.log(age, kind, name)
-//     })
-//   })
+} else if (cmd === 'create') {
+  fs.readFile(petsPath, 'utf8', (readErr, data) => {
+    if (readErr) throw readErr
 
-  // update
-  // } else if (cmd === 'update') {
-  //   fs.readFile(petsPath, 'utf8', (err, data) => {
-  //     if (err) throw err
-  //
-  //
-  //   })
-} else {
-  console.error(`Usage: ${node} ${file} [ read | create | update | destroy ]`)
-  process.exit(1)
+    let pets = JSON.parse(data)
+    let age = Number(process.argv[3])
+    let kind = process.argv[4]
+    let name = process.argv[5]
+
+    if (!name) {
+      console.error(`Usage: ${node} ${file} ${cmd} AGE KIND NAME`)
+      process.exit(1)
+    } else {
+      pets.push({ age, kind, name })
+
+      let petsJSON = JSON.stringify(pets)
+
+      fs.writeFile(petsPath, petsJSON, (writeErr) => {
+        if (writeErr) throw writeErr
+        console.log(age, kind, name)
+      })
+    }
+  })
 }
+
+// update
+// } else if (cmd === 'update') {
+//   fs.readFile(petsPath, 'utf8', (err, data) => {
+//     if (err) throw err
+//
+//
+//   })
+// } else {
+//   console.error(`Usage: ${node} ${file} [ read | create | update | destroy ]`)
+//   process.exit(1)
+// }
