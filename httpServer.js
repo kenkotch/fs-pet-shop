@@ -1,5 +1,11 @@
 'use strict'
 
+let fs = require('fs')
+
+const path = require('path')
+
+const petsPath = path.join(__dirname, 'pets.json')
+
 const http = require('http')
 
 const sourceFile = require('./pets.json')
