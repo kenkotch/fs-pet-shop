@@ -6,6 +6,8 @@ const sourceFile = require('./pets.json')
 
 const port = process.env.PORT || 8000
 
+let fs = require('fs')
+
 const server = http.createServer((req, res) => {
   if (req.method === 'GET' && req.url === '/pets') {
     res.setHeader('Content-Type', 'application/json')
