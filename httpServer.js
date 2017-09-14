@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
       res.setHeader('Content-Type', 'application/json')
       res.end(pets[0])
     })
-  } else if (req.method === 'GET' && req.url === '/pets/2') {
+  } else if (req.method === 'GET' && req.url === '/pets/2' || req.url === '/pets/-1') {
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
       if (err) {
         console.error(err.stack)
