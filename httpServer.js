@@ -30,8 +30,11 @@ const server = http.createServer((req, res) => {
         res.setHeader('Content-Type', 'text/plain')
         res.end('Interna Server Error')
       }
+      let pet = JSON.parse(petsJSON)
+      let petsFound = JSON.stringify(pet[0])
+
       res.setHeader('Content-Type', 'application/json')
-      res.end(petsJSON[0]) // this should return pets.json idx 0
+      res.end(petsFound)
     })
   } else if (req.method === 'GET' && req.url === '/pets/1') {
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
@@ -41,8 +44,11 @@ const server = http.createServer((req, res) => {
         res.setHeader('Content-Type', 'text/plain')
         res.end('Interna Server Error')
       }
+      let pet = JSON.parse(petsJSON)
+      let petsFound = JSON.stringify(pet[1])
+
       res.setHeader('Content-Type', 'application/json')
-      res.end('hello1') // this should return pets.json idx 1
+      res.end(petsFound)
     })
   } else if (req.method === 'GET' && (req.url === '/pets/2' || req.url === '/pets/-1')) {
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
@@ -52,6 +58,7 @@ const server = http.createServer((req, res) => {
         res.setHeader('Content-Type', 'text/plain')
         res.end('Interna Server Error')
       }
+      res.statusCode = 404
       res.setHeader('Content-Type', 'text/plain')
       res.end('Not Found')
     })
