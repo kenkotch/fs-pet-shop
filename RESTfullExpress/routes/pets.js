@@ -65,8 +65,26 @@ router.patch('/:id', (req, res) => {
 
 // D in CRUDL
 router.delete('/:id', (req, res) => {
-  console.log('delete id', req.params.id)
-  res.send('D in CRUDL')
+  fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
+    if (err) throw err
+
+    let idx = Number(req.params.id)
+    console.log('index to delete is', idx)
+    let pets = JSON.parse(petsJSON)
+
+    if (idx < 0 || idx > pets.length - 1 || Number.isNaN(idx)) {
+      res.sendStatus(404)
+    }
+
+    let pet = pets.splice(idx, 1)[0]
+    let newPetsJSON = JSON.stringify(pets)
+
+    fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
+      if (writeErr) throw writeErr
+
+      res.send(pet)
+    })
+  })
 })
 
 // L in CRUDL
