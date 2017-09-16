@@ -20,13 +20,7 @@ router.post('/', (req, res) => {
     let pets = JSON.parse(petsJSON)
     let pet = { name, age, kind }
 
-    if (!pet) {
-      res.sendStatus(400)
-    } else if (isNaN(age)) {
-      res.sendStatus(400)
-    } else if (!name) {
-      res.sendStatus(400)
-    } else if (!kind) {
+    if (!pet || !name || !kind || isNaN(age)) {
       res.sendStatus(400)
     } else {
       pets.push(pet)
