@@ -5,6 +5,7 @@ const fs = require('fs')
 const router = express.Router()
 const petsPath = '../pets.json'
 
+// C in CRUDL
 router.post('/', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) {
@@ -13,16 +14,17 @@ router.post('/', (req, res) => {
     }
 
     let name = req.body.name
-    console.log('this is name', name)
-    // let age = Number(req.body.age)
-    // let kind = req.body.kind
+    let age = Number(req.body.age)
+    let kind = req.body.kind
 
     let pets = JSON.parse(petsJSON)
-    console.log('this is pets', pets)
-    // let pet = { name, age, kind }
-    let pet = req.body.name
+    let pet = { name, age, kind }
 
     if (!pet) {
+      res.sendStatus(400)
+    }
+
+    if (age === null) {
       res.sendStatus(400)
     }
 
@@ -42,6 +44,7 @@ router.post('/', (req, res) => {
   })
 })
 
+// R in CRUDL
 router.get('/:id', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) throw err
@@ -49,22 +52,28 @@ router.get('/:id', (req, res) => {
     let idx = Number(req.params.id)
     console.log('index is', idx)
     let pets = JSON.parse(petsJSON)
-    res.set('Content-Type', 'application/json')
+
+    if (idx < 0 || idx > pets.length - 1 || Number.isNaN(idx)) {
+      res.sendStatus(404)
+    }
+
     res.send(pets[idx])
   })
 })
 
-router.put('/:id', (req, res) => {
+// U in CRUDL
+router.patch('/:id', (req, res) => {
   console.log('the req id is', req.params.id)
   res.send('U in CRUDL')
 })
 
+// D in CRUDL
 router.delete('/:id', (req, res) => {
   console.log('delete id', req.params.id)
   res.send('D in CRUDL')
 })
 
-// L
+// L in CRUDL
 router.get('/', (req, res, next) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) throw err
