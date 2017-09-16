@@ -1,24 +1,57 @@
 const express = require('express')
+const path = require('path')
+const fs = require('fs')
 
 const router = express.Router()
+const petsPath = '../pets.json'
 
 router.post('/', (req, res) => {
-  console.log('POST=', req.body)
+  fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
+    if (err) {
+      console.error(err.stack)
+      res.sendStatus(500)
+    }
 
-  let name = req.body.name
-  let age = Number(req.body.age)
-  let kind = req.body.kind
+    let name = req.body.name
+    console.log('this is name', name)
+    // let age = Number(req.body.age)
+    // let kind = req.body.kind
 
-  let pet = { name, age, kind }
+    let pets = JSON.parse(petsJSON)
+    console.log('this is pets', pets)
+    // let pet = { name, age, kind }
+    let pet = req.body.name
 
-  console.log('req.body from pet', pet)
+    if (!pet) {
+      res.sendStatus(400)
+    }
 
-  res.send('C in CRUDL')
+    pets.push(pet)
+
+    let newPetsJSON = JSON.stringify(pets)
+
+    fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
+      if (writeErr) {
+        console.error(writeErr.stack)
+        res.sendStatus(500)
+      }
+
+      res.set('Content-Type', 'text/plain')
+      res.send(pet)
+    })
+  })
 })
 
 router.get('/:id', (req, res) => {
-  console.log('the req id is', req.params.id)
-  res.send('R in CRUDL')
+  fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
+    if (err) throw err
+
+    let idx = Number(req.params.id)
+    console.log('index is', idx)
+    let pets = JSON.parse(petsJSON)
+    res.set('Content-Type', 'application/json')
+    res.send(pets[idx])
+  })
 })
 
 router.put('/:id', (req, res) => {
@@ -31,9 +64,15 @@ router.delete('/:id', (req, res) => {
   res.send('D in CRUDL')
 })
 
-router.get('/', (req, res) => {
-  console.log('this is the whole list')
-  res.send('L in CRUDL')
+// L
+router.get('/', (req, res, next) => {
+  fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
+    if (err) throw err
+
+    const pets = JSON.parse(petsJSON)
+    res.set('Content-Type', 'application/json')
+    res.send(pets)
+  })
 })
 
 
