@@ -22,25 +22,27 @@ router.post('/', (req, res) => {
 
     if (!pet) {
       res.sendStatus(400)
-    }
-
-    if (age === null) {
+    } else if (isNaN(age)) {
       res.sendStatus(400)
+    } else if (!name) {
+      res.sendStatus(400)
+    } else if (!kind) {
+      res.sendStatus(400)
+    } else {
+      pets.push(pet)
+
+      let newPetsJSON = JSON.stringify(pets)
+
+      fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
+        if (writeErr) {
+          console.error(writeErr.stack)
+          res.sendStatus(500)
+        }
+
+        res.set('Content-Type', 'text/plain')
+        res.send(pet)
+      })
     }
-
-    pets.push(pet)
-
-    let newPetsJSON = JSON.stringify(pets)
-
-    fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
-      if (writeErr) {
-        console.error(writeErr.stack)
-        res.sendStatus(500)
-      }
-
-      res.set('Content-Type', 'text/plain')
-      res.send(pet)
-    })
   })
 })
 
