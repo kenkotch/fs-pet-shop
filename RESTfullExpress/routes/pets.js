@@ -46,7 +46,6 @@ router.get('/:id', (req, res) => {
     if (err) throw err
 
     let idx = Number(req.params.id)
-    console.log('index is', idx)
     let pets = JSON.parse(petsJSON)
 
     if (idx < 0 || idx > pets.length - 1 || Number.isNaN(idx)) {
@@ -59,8 +58,37 @@ router.get('/:id', (req, res) => {
 
 // U in CRUDL
 router.patch('/:id', (req, res) => {
-  console.log('the req id is', req.params.id)
-  res.send('U in CRUDL')
+  fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
+    if (err) throw err
+
+    let name = req.body.name
+    let age = Number(req.body.age)
+    let kind = req.body.kind
+
+    let pets = JSON.parse(petsJSON)
+    let pet = { name, age, kind }
+    let idx = Number(req.params.id)
+
+    if (idx < 0 || idx > pets.length - 1 || Number.isNaN(idx)) {
+      res.sendStatus(404)
+    } else if (!pet || !name || !kind || !age) {
+      res.sendStatus(400)
+    } else {
+      pets.splice(idx, 1, pet)
+
+      let newPetsJSON = JSON.stringify(pets)
+
+      fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
+        if (writeErr) {
+          console.error(writeErr.stack)
+          res.sendStatus(500)
+        }
+
+        res.set('Content-Type', 'text/plain')
+        res.send(pet)
+      })
+    }
+  })
 })
 
 // D in CRUDL
@@ -69,7 +97,6 @@ router.delete('/:id', (req, res) => {
     if (err) throw err
 
     let idx = Number(req.params.id)
-    console.log('index to delete is', idx)
     let pets = JSON.parse(petsJSON)
 
     if (idx < 0 || idx > pets.length - 1 || Number.isNaN(idx)) {
