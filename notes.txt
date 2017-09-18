@@ -1,0 +1,10 @@
+npm test test/pets.test.js
+npm test test/httpServer.test.js
+npm test test/expressServer.test.js
+npm test test/restfulExpressServer.test.js
+
+Bonus:
+npm test test/pets.bonus.test.js
+npm test test/httpServer.bonus.test.js
+npm test test/expressServer.bonus.test.js
+npm test test/restfulExpressServer.bonus.test.js

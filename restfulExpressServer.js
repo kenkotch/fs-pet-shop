@@ -1,14 +1,16 @@
-'use strict'
-
 const express = require('express')
+let fs = require('fs')
 const path = require('path')
-const fs = require('fs')
+const bodyParser = require('body-parser')
 
-const petsPath = '../pets.json'
-const router = express.Router()
+const petsPath = 'pets.json'
+let app = express()
+let port = process.env.port || 8000
+
+app.use(bodyParser.json())
 
 // C in CRUDL
-router.post('/', (req, res) => {
+app.post('/pets', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) {
       console.error(err.stack)
@@ -34,8 +36,6 @@ router.post('/', (req, res) => {
           console.error(writeErr.stack)
           res.sendStatus(500)
         }
-
-        res.set('Content-Type', 'text/plain')
         res.send(pet)
       })
     }
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
 })
 
 // R in CRUDL
-router.get('/:id', (req, res) => {
+app.get('/pets/:id', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) throw err
 
@@ -53,49 +53,50 @@ router.get('/:id', (req, res) => {
     if (idx < 0 || idx > pets.length - 1 || Number.isNaN(idx)) {
       res.sendStatus(404)
     }
-
     res.send(pets[idx])
   })
 })
 
 // U in CRUDL
-router.patch('/:id', (req, res) => {
-  fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
+app.patch('/pets/:id', (req, res) => {
+  fs.readFile(petsPath, 'utf8', (err, content) => {
     if (err) {
-      console.error(err.stack)
-      res.sendStatus(500)
+      console.err(err)
+      res.send(500)
+    }
+    let id = Number(req.params.id)
+    let pets = JSON.parse(content)
+
+    let petName = req.body.name
+    let petKind = req.body.kind
+    let petAge = req.body.age
+    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
+      res.sendStatus(404)
+    }
+    let pet = pets[id]
+    if (petName) {
+      pet.name = petName
+    }
+    if (petKind) {
+      pet.kind = petKind
+    }
+    if (petAge) {
+      pet.age = petAge
     }
 
-    let name = req.body.name
-    let age = Number(req.body.age)
-    let kind = req.body.kind
-
-    let pets = JSON.parse(petsJSON)
-    let pet = { name, age, kind }
-    let idx = Number(req.params.id)
-
-    if (!pet || !name || !kind || isNaN(age) || isNaN(idx) || !idx) {
-      res.sendStatus(400)
-    } else {
-      pets.splice(idx, 1, pet)
-
-      let newPetsJSON = JSON.stringify(pets)
-
-      fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
-        if (writeErr) {
-          console.error(writeErr.stack)
-          res.sendStatus(500)
-        }
-
-        res.set('Content-Type', 'text/plain')
-        res.send(pet)
-      })
-    }
+    let newPetJSON = JSON.stringify(pets)
+    fs.writeFile(petsPath, newPetJSON, (writeErr) => {
+      if (writeErr) {
+        console.error(err.stack)
+        res.sendStatuscode(500)
+      }
+      res.send(pet)
+    })
   })
 })
 
 // D in CRUDL
-router.delete('/:id', (req, res) => {
+app.delete('/pets/:id', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) throw err
 
@@ -115,14 +116,13 @@ router.delete('/:id', (req, res) => {
         console.error(writeErr.stack)
         res.sendStatus(500)
       }
-
       res.send(pet)
     })
   })
 })
 
 // L in CRUDL
-router.get('/', (req, res) => {
+app.get('/pets', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) throw err
 
@@ -131,4 +131,8 @@ router.get('/', (req, res) => {
   })
 })
 
-module.exports = router
+app.listen(port, () => {
+  console.log("Listening on:", port)
+})
+
+module.exports = app
