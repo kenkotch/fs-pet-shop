@@ -64,24 +64,24 @@ app.patch('/pets/:id', (req, res) => {
       console.err(err)
       res.send(500)
     }
-    let id = Number(req.params.id)
+    let idx = Number(req.params.id)
     let pets = JSON.parse(content)
 
-    let petName = req.body.name
-    let petKind = req.body.kind
-    let petAge = req.body.age
-    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
+    let name = req.body.name
+    let kind = req.body.kind
+    let age = req.body.age
+    if (idx < 0 || idx >= pets.length || Number.isNaN(idx)) {
       res.sendStatus(404)
     }
-    let pet = pets[id]
-    if (petName) {
-      pet.name = petName
+    let pet = pets[idx]
+    if (name) {
+      pet.name = name
     }
-    if (petKind) {
-      pet.kind = petKind
+    if (kind) {
+      pet.kind = kind
     }
-    if (petAge) {
-      pet.age = petAge
+    if (age) {
+      pet.age = age
     }
 
     let newPetJSON = JSON.stringify(pets)
